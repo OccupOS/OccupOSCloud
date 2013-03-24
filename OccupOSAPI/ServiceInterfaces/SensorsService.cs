@@ -39,9 +39,18 @@ namespace OccupOSAPI
        public SensorData SensorData { get; set; }
     }
 
+    public class Tmp
+    {
+       public int Type { get; set; }
+       public int Count { get; set; }
+       public int URL { get; set; }
+    }
+
     public class SensorDataService : Service
     {
+        Random rand = new Random();
         List<SensorData> resp,response;
+        Dictionary<int, int> urls = null;
         public object Get(SensorDataReq request)
         {         
             OrmLiteConfig.DialectProvider = SqlServerDialect.Provider;
@@ -58,13 +67,25 @@ namespace OccupOSAPI
             
          //All db access now uses the above dialect provider
             var dbFactory = new OrmLiteConnectionFactory(
-    "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;",  //Connection String
-  //"Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;",
+  //  "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;",  //Connection String
+  "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;",
   SqlServerDialect.Provider);
             using (IDbConnection db = dbFactory.OpenDbConnection())
           {
               resp = db.Select<SensorData>();
+              
               response = resp.ToList<SensorData>();
+            //  var tmp = response.GroupBy(x => x.SensorType).Select(g => new { Type=g.Key, Count =g.Count(),URL = g.Key.GetHashCode() });
+              List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
+              System.Diagnostics.Debug.WriteLine("Count: " + "one".GetHashCode());
+              if (urls == null)
+              {
+                  foreach(Tmp row in tmp)
+                  {
+                      
+                  }
+              }
+              
               int count = response.Count;
               if (request.Id > 0)
               {
@@ -87,7 +108,7 @@ namespace OccupOSAPI
               {
                   response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
               }
-              return new HttpResult(response, ContentType.Json);      
+              return new HttpResult(tmp, ContentType.Json);      
           }
         }
     }

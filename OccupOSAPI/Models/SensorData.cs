@@ -14,9 +14,10 @@ namespace OccupOSAPI.Models
         public  int IntermediateHwMedadataId { get; set; }
         public  string MeasuredData { get; set; }
         public  System.DateTime MeasuredAt { get; set; }
-        public  System.Nullable<System.DateTime> SendAt { get; set; }
+      //  public  System.Nullable<System.DateTime> SendAt { get; set; }
         public  System.Nullable<System.DateTime> PolledAt { get; set; }
-        public  System.DateTime UpdatedAt { get; set; }
-        public  System.DateTime CreatedAt { get; set; }
+      //  public  System.DateTime UpdatedAt { get; set; }
+     //   public  System.DateTime CreatedAt { get; set; }
+        public int SensorType { get; set; }
     }
 }
