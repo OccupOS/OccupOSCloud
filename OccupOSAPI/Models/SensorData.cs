@@ -12,7 +12,7 @@ namespace OccupOSAPI.Models
      //   public  HwControllerMetadata HwControllerMetadata { get; set; }
         public  int SensorMetadataId { get; set; }
         public  int IntermediateHwMedadataId { get; set; }
-        public  string MeasuredData { get; set; }
+        public  string measuredData { get; set; }
         public  System.DateTime MeasuredAt { get; set; }
         public  System.Nullable<System.DateTime> SendAt { get; set; }
         public  System.Nullable<System.DateTime> PolledAt { get; set; }
