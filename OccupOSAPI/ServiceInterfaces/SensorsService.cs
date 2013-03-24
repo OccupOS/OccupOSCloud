@@ -12,8 +12,8 @@ using System.Data.SqlClient;
 
 namespace OccupOSAPI
 {
-    [Route("/api/v1/Sensors")]
-    [Route("/api/v1/Sensors/{Id}")]
+    [Route("/api/v1/Sensors","GET")]
+    [Route("/api/v1/Sensors/{Id}", "GET")]
     public class SensorDataReq
     {
         public int Id { get; set; }
@@ -27,11 +27,28 @@ namespace OccupOSAPI
 
     public class SensorDataResp
     {
-        public int Id {get;set;}
+       // public int Id {get;set;}
+      //  public int SensorMetadataId { get; set; }
+      //  public int IntermediateHwMedadataId { get; set; }
+        public string MeasuredData { get; set; }
+        public System.DateTime MeasuredAt { get; set; }
+    }
+
+    [Route("api/v1/Sensors","POST")]
+    public class SensorDataAdd
+    {
+        public int Id { get; set; }
+        // public  SensorMetadata SensorMetadata { get; set; }
+        //   public  HwControllerMetadata HwControllerMetadata { get; set; }
         public int SensorMetadataId { get; set; }
         public int IntermediateHwMedadataId { get; set; }
         public string MeasuredData { get; set; }
         public System.DateTime MeasuredAt { get; set; }
+        public System.Nullable<System.DateTime> SendAt { get; set; }
+        public System.Nullable<System.DateTime> PolledAt { get; set; }
+        public System.DateTime UpdatedAt { get; set; }
+        public System.DateTime CreatedAt { get; set; }
+        public int SensorType { get; set; }
     }
 
     public class Response
@@ -50,10 +67,12 @@ namespace OccupOSAPI
     {
         Random rand = new Random();
         List<SensorData> resp,response;
+        List<SensorDataResp> returnData;
         Dictionary<int, int> urls = null;
         public object Get(SensorDataReq request)
         {         
             OrmLiteConfig.DialectProvider = SqlServerDialect.Provider;
+            returnData = new List<SensorDataResp>();
             var connectionStringb = new SqlConnectionStringBuilder
             {
                 DataSource =
@@ -76,15 +95,15 @@ namespace OccupOSAPI
               
               response = resp.ToList<SensorData>();
             //  var tmp = response.GroupBy(x => x.SensorType).Select(g => new { Type=g.Key, Count =g.Count(),URL = g.Key.GetHashCode() });
-              List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
+             // List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
               System.Diagnostics.Debug.WriteLine("Count: " + "one".GetHashCode());
-              if (urls == null)
+          /*    if (urls == null)
               {
                   foreach(Tmp row in tmp)
                   {
                       
                   }
-              }
+              }*/
               
               int count = response.Count;
               if (request.Id > 0)
@@ -108,8 +127,37 @@ namespace OccupOSAPI
               {
                   response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
               }
-              return new HttpResult(tmp, ContentType.Json);      
+              foreach (SensorData tmp in response)
+              {
+                  SensorDataResp value = new SensorDataResp();
+                  value.MeasuredData = tmp.MeasuredData;
+                  value.MeasuredAt = tmp.MeasuredAt;
+                  returnData.Add(value);
+              }
+              return new HttpResult(returnData, ContentType.Json);      
           }
+        }
+    }
+
+    public class SensorDataAddService : Service
+    {
+        public object POST(SensorDataAdd request)
+        {
+            OrmLiteConfig.DialectProvider = SqlServerDialect.Provider;
+            long id;
+            var dbFactory = new OrmLiteConnectionFactory(
+                //  "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;",  //Connection String
+                "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;",
+                 SqlServerDialect.Provider);
+            using (IDbConnection db = dbFactory.OpenDbConnection())
+            {
+                SensorData data = new SensorData { MeasuredAt = request.MeasuredAt, MeasuredData = request.MeasuredData, CreatedAt = request.CreatedAt, IntermediateHwMedadataId = request.IntermediateHwMedadataId, PolledAt = request.PolledAt, SendAt = request.SendAt, SensorMetadataId = request.SensorMetadataId, SensorType = request.SensorType, UpdatedAt = request.UpdatedAt };
+                db.Insert<SensorData>(data);
+                id = db.GetLastInsertId();
+              
+            }
+           return new HttpResult(id, ContentType.Json);
+
         }
     }
 }
