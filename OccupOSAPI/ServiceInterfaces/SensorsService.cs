@@ -34,7 +34,7 @@ namespace OccupOSAPI
         public System.DateTime measuredAt { get; set; }
     }
 
-    [Route("api/v1/Sensors","POST")]
+    [Route("/api/v1/Sensors","POST")]
     public class SensorDataAdd
     {
         public int Id { get; set; }
