@@ -71,6 +71,7 @@ namespace OccupOSAPI
         Dictionary<int, int> urls = null;
         public object Get(SensorDataReq request)
         {         
+            
             OrmLiteConfig.DialectProvider = SqlServerDialect.Provider;
             returnData = new List<SensorDataResp>();
             var connectionStringb = new SqlConnectionStringBuilder
@@ -134,7 +135,8 @@ namespace OccupOSAPI
                   value.measuredAt = tmp.MeasuredAt;
                   returnData.Add(value);
               }
-              return new HttpResult(returnData, ContentType.Json);      
+              return new HttpResult(returnData, ContentType.Json);
+             // return returnData;
           }
         }
     }
@@ -151,7 +153,7 @@ namespace OccupOSAPI
                  SqlServerDialect.Provider);
             using (IDbConnection db = dbFactory.OpenDbConnection())
             {
-                SensorData data = new SensorData { MeasuredAt = request.MeasuredAt, measuredData = request.MeasuredData, CreatedAt = request.CreatedAt, IntermediateHwMedadataId = request.IntermediateHwMedadataId, PolledAt = request.PolledAt, SendAt = request.SendAt, SensorMetadataId = request.SensorMetadataId, SensorType = request.SensorType, UpdatedAt = request.UpdatedAt };
+                SensorData data = new SensorData { MeasuredAt = request.MeasuredAt, measuredData = request.MeasuredData, CreatedAt = request.CreatedAt.ToLocalTime(), IntermediateHwMedadataId = request.IntermediateHwMedadataId, PolledAt = request.PolledAt, SendAt = request.SendAt, SensorMetadataId = request.SensorMetadataId, SensorType = request.SensorType, UpdatedAt = request.UpdatedAt };
                 db.Insert<SensorData>(data);
                 id = db.GetLastInsertId();
               

@@ -19,6 +19,7 @@ namespace OccupOSAPI
 
         public override void Configure(Container container)
         {
+            ServiceStack.Text.JsConfig.DateHandler = ServiceStack.Text.JsonDateHandler.ISO8601;
      /*       container.Register<IDbConnectionFactory>(c =>
                 new OrmLiteConnectionFactory(
     "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;",  //Connection String
