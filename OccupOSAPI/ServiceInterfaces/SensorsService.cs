@@ -30,6 +30,7 @@ namespace OccupOSAPI {
         //  public int IntermediateHwMedadataId { get; set; }
         public string measuredData { get; set; }
         public System.DateTime measuredAt { get; set; }
+        public int SensorType { get; set; }
     }
 
     [Route("/api/v1/Sensors", "POST")]
@@ -88,7 +89,7 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "M";
+            var user = "D";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
@@ -99,7 +100,7 @@ namespace OccupOSAPI {
             using (IDbConnection db = dbFactory.OpenDbConnection()) {
                 resp = db.Select<SensorData>();
 
-                response = resp.ToList<SensorData>();
+                response = resp.OrderByDescending(x=>x.MeasuredAt).ToList<SensorData>();
                 //  var tmp = response.GroupBy(x => x.SensorType).Select(g => new { Type=g.Key, Count =g.Count(),URL = g.Key.GetHashCode() });
                 // List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
                 System.Diagnostics.Debug.WriteLine("Count: " + "one".GetHashCode());
@@ -137,6 +138,7 @@ namespace OccupOSAPI {
                   SensorDataResp value = new SensorDataResp();
                   value.measuredData = tmp.measuredData;
                   value.measuredAt = tmp.MeasuredAt;
+                  value.SensorType = tmp.SensorType;
                   returnData.Add(value);
               }
               tmpResp.sensors = returnData;
