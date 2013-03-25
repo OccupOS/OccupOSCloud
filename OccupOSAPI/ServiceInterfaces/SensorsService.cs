@@ -99,9 +99,8 @@ namespace OccupOSAPI {
                     {
                         foreach(Tmp row in tmp)
                         {
-                      
-                        }
-                    }*/
+                  }
+              }*/
 
                 int count = response.Count;
                 if (request.Id > 0) {
@@ -127,6 +126,7 @@ namespace OccupOSAPI {
                     returnData.Add(value);
                 }
                 return new HttpResult(returnData, ContentType.Json);
+                // return returnData;
             }
         }
     }
