@@ -30,7 +30,7 @@ namespace OccupOSAPI {
         //  public int IntermediateHwMedadataId { get; set; }
         public string measuredData { get; set; }
         public System.DateTime measuredAt { get; set; }
-        public int SensorType { get; set; }
+        public int sensorType { get; set; }
     }
 
     [Route("/api/v1/Sensors", "POST")]
@@ -138,7 +138,7 @@ namespace OccupOSAPI {
                   SensorDataResp value = new SensorDataResp();
                   value.measuredData = tmp.measuredData;
                   value.measuredAt = tmp.MeasuredAt;
-                  value.SensorType = tmp.SensorType;
+                  value.sensorType = tmp.sensorType;
                   returnData.Add(value);
               }
               tmpResp.sensors = returnData;
@@ -161,7 +161,7 @@ namespace OccupOSAPI {
                 "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;",
                  SqlServerDialect.Provider);
             using (IDbConnection db = dbFactory.OpenDbConnection()) {
-                SensorData data = new SensorData { MeasuredAt = request.MeasuredAt, measuredData = request.MeasuredData, CreatedAt = request.CreatedAt, IntermediateHwMedadataId = request.IntermediateHwMedadataId, PolledAt = request.PolledAt, SendAt = request.SendAt, SensorMetadataId = request.SensorMetadataId, SensorType = request.SensorType, UpdatedAt = request.UpdatedAt };
+                SensorData data = new SensorData { MeasuredAt = request.MeasuredAt, measuredData = request.MeasuredData, CreatedAt = request.CreatedAt, IntermediateHwMedadataId = request.IntermediateHwMedadataId, PolledAt = request.PolledAt, SendAt = request.SendAt, SensorMetadataId = request.SensorMetadataId, sensorType = request.SensorType, UpdatedAt = request.UpdatedAt };
                 db.Insert<SensorData>(data);
                 id = db.GetLastInsertId();
 

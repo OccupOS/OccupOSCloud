@@ -18,6 +18,6 @@ namespace OccupOSAPI.Models
         public  System.Nullable<System.DateTime> PolledAt { get; set; }
         public  System.DateTime UpdatedAt { get; set; }
         public  System.DateTime CreatedAt { get; set; }
-        public int SensorType { get; set; }
+        public int sensorType { get; set; }
     }
 }

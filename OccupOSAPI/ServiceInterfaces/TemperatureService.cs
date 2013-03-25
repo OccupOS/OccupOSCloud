@@ -30,7 +30,7 @@ namespace OccupOSMonitorNew.ServiceInterfaces
             {
                 resp = db.Select<SensorData>();
                 response = resp.ToList<SensorData>();
-                response = response.Where<SensorData>(x => x.SensorType == 3).ToList<SensorData>();
+                response = response.Where<SensorData>(x => x.sensorType == 3).ToList<SensorData>();
             }
             return response;
         }
