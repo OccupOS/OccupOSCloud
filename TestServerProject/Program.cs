@@ -48,9 +48,13 @@ namespace OccupOSCloud {
         static void client_Disconnected(Client sender) {
         }
 
-        static void client_Received(Client sender, byte[] data) {
-            Console.WriteLine("Message from {0}: {1}", sender.ID, Encoding.Default.GetString(data));
-            helper.insertSensorData(1, 1, Encoding.Default.GetString(data), DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now);
+        static void client_Received(Client sender, byte[] rawData) {
+            Console.WriteLine("Message from {0}: {1}", sender.ID, Encoding.Default.GetString(rawData));
+
+            string decodedData = Encoding.UTF8.GetString(rawData);
+            //decodedData.
+
+            helper.insertSensorData(1, 1, Encoding.Default.GetString(rawData), DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now);
         }
     }
 }
