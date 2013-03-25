@@ -144,8 +144,8 @@ namespace OccupOSAPI
               }
               tmpResp.sensors = returnData;
               tmpResp.ToJson<JsonResp>();
-             // return new HttpResult(tmpResp, ContentType.Json);
-              return tmpResp;
+              return new HttpResult(tmpResp, ContentType.Json);
+             // return tmpResp;
           }
         }
     }
