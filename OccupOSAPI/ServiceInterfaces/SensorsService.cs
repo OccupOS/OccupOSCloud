@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using OccupOSAPI.Models;
 using System.Data.SqlClient;
+using ServiceStack.Text;
 
 namespace OccupOSAPI {
     [Route("/api/v1/Sensors", "GET")]
@@ -57,12 +58,19 @@ namespace OccupOSAPI {
         public int URL { get; set; }
     }
 
+    public class JsonResp {
+        public List<SensorDataResp> sensors { get; set; }
+    }
+
     public class SensorDataService : Service {
         Random rand = new Random();
         List<SensorData> resp, response;
         List<SensorDataResp> returnData;
         Dictionary<int, int> urls = null;
+
+        JsonResp tmpResp = new JsonResp();
         public object Get(SensorDataReq request) {
+
             OrmLiteConfig.DialectProvider = SqlServerDialect.Provider;
             returnData = new List<SensorDataResp>();
             var connectionStringb = new SqlConnectionStringBuilder {
@@ -125,8 +133,10 @@ namespace OccupOSAPI {
                     value.measuredAt = tmp.MeasuredAt;
                     returnData.Add(value);
                 }
-                return new HttpResult(returnData, ContentType.Json);
-                // return returnData;
+                tmpResp.sensors = returnData;
+                tmpResp.ToJson<JsonResp>();
+                // return new HttpResult(tmpResp, ContentType.Json);
+                return tmpResp;
             }
         }
     }
