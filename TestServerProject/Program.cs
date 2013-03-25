@@ -1,60 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using OccupOSNode;
-using System.Net.Sockets;
-using System.Threading;
-using Microsoft.WindowsAzure.Storage;
 
-namespace OccupOSCloud {
-    class Program {
-        static Listener l;
-        static SQLServerHelper helper;
-        static void Main(string[] args) {
+namespace OccupOSCloud
+{
+    internal class Program
+    {
+        private static Listener listener;
+        private static SQLServerHelper helper;
 
-            // This is the server part
-            // l = new Listener(1333);
-            //     l.SocketAccepted += new Listener.SocketAcceptedHandler(l_SocketAccepted);
-
-            //   l.Start();
-
-            //  Console.Read();
-
-            //testing the SQLServerHelper
-            SensorDataTest testData = new SensorDataTest(1, 1);
-            testData.CreatedAt = DateTime.Now;
-            testData.IntermediateHwMetadataId = 1;
-            testData.MeasuredAt = DateTime.Now;
-            testData.MeasuredData = "testData";
-            testData.PolledAt = DateTime.Now;
-            testData.SendAt = DateTime.Now;
-            testData.UpdatedAt = DateTime.Now;
-            Console.WriteLine("Listening connections...");
+        public static void Main(string[] args)
+        {
             helper = new SQLServerHelper("tcp:dndo40zalb.database.windows.net,1433", "comp2014@dndo40zalb", "20041908kjH", "TestSQLDB");
-            helper.insertSensorData(1, 1, "{\"0\":5}", DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now);
-            Console.WriteLine("Data is send");
+
+            Console.WriteLine("Listening for connections...");
             Console.Read();
 
+            listener = new Listener(1616);
+            listener.SocketAccepted += l_SocketAccepted;
         }
-        static void l_SocketAccepted(System.Net.Sockets.Socket e) {
+
+        private static void l_SocketAccepted(System.Net.Sockets.Socket e)
+        {
             Console.WriteLine("Connection established!");
             Client client = new Client(e);
-            client.Received += new Client.ClientReceivedHandler(client_Received);
-            client.Disconnected += new Client.ClientDisconnectedHandler(client_Disconnected);
+            client.Received += client_Received;
+            client.Disconnected += client_Disconnected;
         }
 
-        static void client_Disconnected(Client sender) {
+        private static void client_Received(Client sender, byte[] rawData)
+        {
+            Console.WriteLine("Message from {0}: {1}", sender.ID, Encoding.UTF8.GetString(rawData));
+
+            char[] delimiter = new char[1] {','};
+            string[] decodedData = Encoding.UTF8.GetString(rawData).Split(delimiter);
+
+            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0]));
         }
 
-        static void client_Received(Client sender, byte[] rawData) {
-            Console.WriteLine("Message from {0}: {1}", sender.ID, Encoding.Default.GetString(rawData));
+        private static void client_Disconnected(Client sender)
+        {
 
-            string decodedData = Encoding.UTF8.GetString(rawData);
-            //decodedData.
-
-            helper.insertSensorData(1, 1, Encoding.Default.GetString(rawData), DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now);
         }
     }
 }
