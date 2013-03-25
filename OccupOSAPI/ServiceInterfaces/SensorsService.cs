@@ -109,7 +109,6 @@ namespace OccupOSAPI {
                         {
                   }
               }*/
-<<<<<<< HEAD
               
               int count = response.Count;
               if (request.Id > 0)
@@ -145,37 +144,9 @@ namespace OccupOSAPI {
               return new HttpResult(tmpResp, ContentType.Json);
              // return tmpResp;
           }
-=======
 
-                int count = response.Count;
-                if (request.Id > 0) {
-                    response = response.Where<SensorData>(x => x.SensorMetadataId == request.Id).ToList<SensorData>();
-                }
-                if (request.Offset > 0) {
-                    response = response.OrderBy(x => x.MeasuredAt).Take(count - request.Offset).ToList<SensorData>();
-                }
 
-                if (request.From.Year > 1) {
-                    response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.From) > 0).ToList<SensorData>();
-                }
-                if (request.To.Year > 1) {
-                    response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.To) < 0).ToList<SensorData>();
-                }
-                if (request.Limit > 0) {
-                    response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
-                }
-                foreach (SensorData tmp in response) {
-                    SensorDataResp value = new SensorDataResp();
-                    value.measuredData = tmp.measuredData;
-                    value.measuredAt = tmp.MeasuredAt;
-                    returnData.Add(value);
-                }
-                tmpResp.sensors = returnData;
-                tmpResp.ToJson<JsonResp>();
-                // return new HttpResult(tmpResp, ContentType.Json);
-                return tmpResp;
-            }
->>>>>>> 9b9caef8a9fb3ad82fefbf373def5370d850ba3a
+               
         }
     }
 
