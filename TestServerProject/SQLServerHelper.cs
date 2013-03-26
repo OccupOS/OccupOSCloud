@@ -10,7 +10,6 @@ namespace OccupOSCloud
     public class SQLServerHelper
     {
         private SqlConnectionStringBuilder connectionStringb;
-
         private string connectionString;
 
         public SQLServerHelper(String dataSource, string userName, string password, string databaseName)
@@ -31,11 +30,11 @@ namespace OccupOSCloud
             this.connectionString = connectionString;
         }
 
-        public int InsertSensorData(int sensorMetadataId, int intermediateHwMetadataId, string measuredData, DateTime measuredAt)
+        public int InsertSensorData(int sensorMetadataId, int intermediateHwMetadataId, string measuredData, DateTime measuredAt, int sensorType)
         {
             using (SqlConnection connection = new SqlConnection(connectionStringb.ConnectionString))
             {
-                string queryString = string.Format("INSERT INTO SensorData (SensorMetadataId, IntermediateHwMetadataId, MeasuredData, MeasuredAt) VALUES ('{0}','{1}','{2}','{3}');", sensorMetadataId, intermediateHwMetadataId, measuredData, measuredAt.ToLongDateString() + " " + measuredAt.ToLongTimeString());
+                string queryString = string.Format("INSERT INTO SensorData (SensorMetadataId, IntermediateHwMetadataId, MeasuredData, MeasuredAt, SensorType) VALUES ('{0}','{1}','{2}','{3}','{4}');", sensorMetadataId, intermediateHwMetadataId, measuredData, measuredAt.ToLongDateString() + " " + measuredAt.ToLongTimeString(), sensorType);
                 SqlCommand command = new SqlCommand(queryString, connection);
                 return ExecuteSQLCommand(command);
             }

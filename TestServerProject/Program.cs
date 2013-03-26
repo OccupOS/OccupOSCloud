@@ -37,7 +37,7 @@ namespace OccupOSCloud
 
             Console.WriteLine("Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}", sender.ID, decodedData[0], decodedData[3], decodedData[4],decodedData[5]);
 
-            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0], new CultureInfo("en-US")));
+            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0], new CultureInfo("en-US")),3); //3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
         }
 
         private static void client_Disconnected(Client sender)
