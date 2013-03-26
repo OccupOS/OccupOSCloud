@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using OccupOSNode;
+using System.Globalization;
 
 namespace OccupOSCloud
 {
@@ -31,12 +32,12 @@ namespace OccupOSCloud
 
         private static void client_Received(Client sender, byte[] rawData)
         {
-            Console.WriteLine("Message from {0}: {1}", sender.ID, Encoding.UTF8.GetString(rawData));
-
             char[] delimiter = new char[1] {','};
             string[] decodedData = Encoding.UTF8.GetString(rawData).Split(delimiter);
 
-            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0]));
+            Console.WriteLine("Message from {0}:\nAnalogLight: {2}\nMeasuredAt: {1}", sender.ID, decodedData[0], decodedData[1]);
+
+            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0], new CultureInfo("en-US")));
         }
 
         private static void client_Disconnected(Client sender)
