@@ -131,7 +131,27 @@ namespace OccupOSAPI {
               }
               if (request.Limit > 0)
               {
-                  response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
+                  if (request.Limit == 1)
+                  {
+                      List < Tmp > tmp = response.GroupBy(x => x.sensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count()}).ToList<Tmp>();
+                      foreach (Tmp t in tmp)
+                      {
+                          List<SensorData> temp = response.OrderByDescending(x => x.MeasuredAt).Where(x => x.sensorType == t.Type).Take(1).ToList<SensorData>();
+                          SensorDataResp value = new SensorDataResp();
+                          value.measuredData = temp[0].measuredData;
+                          
+                          value.measuredAt = temp[0].MeasuredAt;
+                          value.sensorType = temp[0].sensorType;
+                          returnData.Add(value);
+                      }
+                      tmpResp.sensors = returnData;
+                      tmpResp.ToJson<JsonResp>();
+                      return new HttpResult(tmpResp, ContentType.Json);
+                  }
+                  else
+                  {
+                      response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
+                  } 
               }
               foreach (SensorData tmp in response)
               {
