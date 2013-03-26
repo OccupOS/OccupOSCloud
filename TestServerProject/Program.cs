@@ -11,7 +11,7 @@ namespace OccupOSCloud
 
         public static void Main(string[] args)
         {
-            listener = new Listener(80);
+            listener = new Listener(1333);
             listener.SocketAccepted += new Listener.SocketAcceptedHandler(l_SocketAccepted);
             listener.Start();
 
