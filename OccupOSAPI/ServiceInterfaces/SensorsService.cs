@@ -1,4 +1,4 @@
-﻿using ServiceStack.Common.Web;
+﻿﻿using ServiceStack.Common.Web;
 using ServiceStack.OrmLite;
 using ServiceStack.ServiceHost;
 using ServiceStack.ServiceInterface;
@@ -89,7 +89,7 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "M";
+            var user = "D";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
@@ -126,7 +126,23 @@ namespace OccupOSAPI {
                     response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.To) < 0).ToList<SensorData>();
                 }
                 if (request.Limit > 0) {
-                    response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
+                    if (request.Limit == 1) {
+                        List<Tmp> tmp = response.GroupBy(x => x.sensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count() }).ToList<Tmp>();
+                        foreach (Tmp t in tmp) {
+                            List<SensorData> temp = response.OrderByDescending(x => x.MeasuredAt).Where(x => x.sensorType == t.Type).Take(1).ToList<SensorData>();
+                            SensorDataResp value = new SensorDataResp();
+                            value.measuredData = temp[0].measuredData;
+
+                            value.measuredAt = temp[0].MeasuredAt;
+                            value.sensorType = temp[0].sensorType;
+                            returnData.Add(value);
+                        }
+                        tmpResp.sensors = returnData;
+                        tmpResp.ToJson<JsonResp>();
+                        return new HttpResult(tmpResp, ContentType.Json);
+                    } else {
+                        response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
+                    }
                 }
                 foreach (SensorData tmp in response) {
                     SensorDataResp value = new SensorDataResp();
