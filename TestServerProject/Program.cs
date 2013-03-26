@@ -11,13 +11,14 @@ namespace OccupOSCloud
 
         public static void Main(string[] args)
         {
+            listener = new Listener(80);
+            listener.SocketAccepted += new Listener.SocketAcceptedHandler(l_SocketAccepted);
+            listener.Start();
+
             helper = new SQLServerHelper("tcp:dndo40zalb.database.windows.net,1433", "comp2014@dndo40zalb", "20041908kjH", "TestSQLDB");
 
             Console.WriteLine("Listening for connections...");
             Console.Read();
-
-            listener = new Listener(1616);
-            listener.SocketAccepted += l_SocketAccepted;
         }
 
         private static void l_SocketAccepted(System.Net.Sockets.Socket e)
