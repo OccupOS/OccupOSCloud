@@ -89,7 +89,7 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "D";
+            var user = "M";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
@@ -100,7 +100,7 @@ namespace OccupOSAPI {
             using (IDbConnection db = dbFactory.OpenDbConnection()) {
                 resp = db.Select<SensorData>();
 
-                response = resp.OrderByDescending(x=>x.MeasuredAt).ToList<SensorData>();
+                response = resp.OrderByDescending(x => x.MeasuredAt).ToList<SensorData>();
                 //  var tmp = response.GroupBy(x => x.SensorType).Select(g => new { Type=g.Key, Count =g.Count(),URL = g.Key.GetHashCode() });
                 // List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
                 System.Diagnostics.Debug.WriteLine("Count: " + "one".GetHashCode());
@@ -110,45 +110,39 @@ namespace OccupOSAPI {
                         {
                   }
               }*/
-              
-              int count = response.Count;
-              if (request.Id > 0)
-              {
-                  response = response.Where<SensorData>(x => x.SensorMetadataId == request.Id).ToList<SensorData>();   
-              }
-              if (request.Offset > 0)
-              {
-                  response = response.OrderBy(x => x.MeasuredAt).Take(count - request.Offset).ToList<SensorData>();
-              }
 
-              if (request.From.Year > 1)
-              {
-                  response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.From) > 0).ToList<SensorData>();
-              }
-              if (request.To.Year > 1)
-              {
-                  response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.To) < 0).ToList<SensorData>();
-              }
-              if (request.Limit > 0)
-              {
-                  response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
-              }
-              foreach (SensorData tmp in response)
-              {
-                  SensorDataResp value = new SensorDataResp();
-                  value.measuredData = tmp.measuredData;
-                  value.measuredAt = tmp.MeasuredAt;
-                  value.sensorType = tmp.sensorType;
-                  returnData.Add(value);
-              }
-              tmpResp.sensors = returnData;
-              tmpResp.ToJson<JsonResp>();
-              return new HttpResult(tmpResp, ContentType.Json);
-             // return tmpResp;
-          }
+                int count = response.Count;
+                if (request.Id > 0) {
+                    response = response.Where<SensorData>(x => x.SensorMetadataId == request.Id).ToList<SensorData>();
+                }
+                if (request.Offset > 0) {
+                    response = response.OrderBy(x => x.MeasuredAt).Take(count - request.Offset).ToList<SensorData>();
+                }
+
+                if (request.From.Year > 1) {
+                    response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.From) > 0).ToList<SensorData>();
+                }
+                if (request.To.Year > 1) {
+                    response = response.Where<SensorData>(x => x.MeasuredAt.CompareTo(request.To) < 0).ToList<SensorData>();
+                }
+                if (request.Limit > 0) {
+                    response = response.OrderByDescending(x => x.MeasuredAt).Take(request.Limit).ToList<SensorData>();
+                }
+                foreach (SensorData tmp in response) {
+                    SensorDataResp value = new SensorDataResp();
+                    value.measuredData = tmp.measuredData;
+                    value.measuredAt = tmp.MeasuredAt;
+                    value.sensorType = tmp.sensorType;
+                    returnData.Add(value);
+                }
+                tmpResp.sensors = returnData;
+                tmpResp.ToJson<JsonResp>();
+                return new HttpResult(tmpResp, ContentType.Json);
+                // return tmpResp;
+            }
 
 
-               
+
         }
     }
 
