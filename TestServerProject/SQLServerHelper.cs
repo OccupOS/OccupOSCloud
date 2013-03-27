@@ -34,7 +34,7 @@ namespace OccupOSCloud
         {
             using (SqlConnection connection = new SqlConnection(connectionStringb.ConnectionString))
             {
-                string queryString = string.Format("INSERT INTO SensorData (SensorMetadataId, IntermediateHwMetadataId, MeasuredData, MeasuredAt, SensorType) VALUES ('{0}','{1}','{2}','{3}','{4}');", sensorMetadataId, intermediateHwMetadataId, measuredData, measuredAt.ToLongDateString() + " " + measuredAt.ToLongTimeString(), sensorType);
+                string queryString = string.Format("INSERT INTO SensorData (SensorMetadataId, IntermediateHwMedadataId, MeasuredData, MeasuredAt, SensorType) VALUES ('{0}','{1}','{2}','{3}','{4}');", sensorMetadataId, intermediateHwMetadataId, measuredData, measuredAt.ToLongDateString() + " " + measuredAt.ToLongTimeString(), sensorType);
                 SqlCommand command = new SqlCommand(queryString, connection);
                 return ExecuteSQLCommand(command);
             }
