@@ -101,7 +101,7 @@ namespace OccupOSAPI {
                 connectionString =
                     "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Encrypt=True;TrustServerCertificate=False";
             }
-            System.Diagnostics.Debug.WriteLine(connectionString);
+            //System.Diagnostics.Debug.WriteLine(connectionString);
 
             //All db access now uses the above dialect provider
             var dbFactory = new OrmLiteConnectionFactory(connectionString, SqlServerDialect.Provider);
