@@ -30,14 +30,20 @@ namespace OccupOSCloud
             client.Disconnected += client_Disconnected;
         }
 
-        private static void client_Received(Client sender, byte[] rawData)
-        {
-            char[] delimiter = new char[1] {','};
+        private static void client_Received(Client sender, byte[] rawData) {
+            char[] delimiter = new char[1] { ',' };
             string[] decodedData = Encoding.UTF8.GetString(rawData).Split(delimiter);
 
-            Console.WriteLine("Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}", sender.ID, decodedData[0], decodedData[3], decodedData[4],decodedData[5]);
+            Console.WriteLine("Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}", sender.ID, decodedData[0], decodedData[3], decodedData[4], decodedData[5]);
 
-            helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0], new CultureInfo("en-US")),3); //3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
+            if (decodedData[1] != "0" && decodedData[1] != "0.0")
+                helper.InsertSensorData(1, 1, decodedData[1], DateTime.Parse(decodedData[0], new CultureInfo("en-US")), 3); //3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
+            if ((decodedData[3] != "0" && decodedData[3] != "0.0") || (decodedData[4] != "0" && decodedData[4] != "0.0") || (decodedData[5] != "0" && decodedData[5] != "0.0")) {
+                System.DateTime dt = DateTime.Now;
+                helper.InsertSensorData(1, 1, decodedData[3], dt, 5);
+                helper.InsertSensorData(1, 1, decodedData[4], dt, 7);
+                helper.InsertSensorData(1, 1, decodedData[5], dt, 9);
+            }
         }
 
         private static void client_Disconnected(Client sender)
