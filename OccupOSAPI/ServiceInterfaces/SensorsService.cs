@@ -91,11 +91,17 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "D";
+            var user = "A";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
             }
+
+            if (user.Equals("A")) {
+                connectionString =
+                    "Data Source=tcp:dndo40zalb.database.windows.net,1433;Initial Catalog=TestSQLDB;User ID=comp2014@dndo40zalb;Password=20041908kjH;Encrypt=True;TrustServerCertificate=False";
+            }
+            System.Diagnostics.Debug.WriteLine(connectionString);
 
             //All db access now uses the above dialect provider
             var dbFactory = new OrmLiteConnectionFactory(connectionString, SqlServerDialect.Provider);
