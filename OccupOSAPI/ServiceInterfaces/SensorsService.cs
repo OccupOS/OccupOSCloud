@@ -31,6 +31,7 @@ namespace OccupOSAPI {
         public string measuredData { get; set; }
         public System.DateTime measuredAt { get; set; }
         public int sensorType { get; set; }
+        public System.DateTime createdAt { get; set; }
     }
 
     [Route("/api/v1/Sensors", "POST")]
@@ -57,6 +58,7 @@ namespace OccupOSAPI {
         public int Type { get; set; }
         public int Count { get; set; }
         public int URL { get; set; }
+        public System.DateTime createdAt { get; set; }
     }
 
     public class JsonResp {
@@ -132,7 +134,7 @@ namespace OccupOSAPI {
                             List<SensorData> temp = response.OrderByDescending(x => x.MeasuredAt).Where(x => x.sensorType == t.Type).Take(1).ToList<SensorData>();
                             SensorDataResp value = new SensorDataResp();
                             value.measuredData = temp[0].measuredData;
-
+                            value.createdAt = temp[0].CreatedAt;
                             value.measuredAt = temp[0].MeasuredAt;
                             value.sensorType = temp[0].sensorType;
                             returnData.Add(value);
@@ -149,6 +151,7 @@ namespace OccupOSAPI {
                     value.measuredData = tmp.measuredData;
                     value.measuredAt = tmp.MeasuredAt;
                     value.sensorType = tmp.sensorType;
+                    value.createdAt = tmp.CreatedAt;
                     returnData.Add(value);
                 }
                 tmpResp.sensors = returnData;
