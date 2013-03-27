@@ -89,7 +89,7 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "M";
+            var user = "D";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
