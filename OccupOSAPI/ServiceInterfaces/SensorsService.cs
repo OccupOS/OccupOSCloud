@@ -70,7 +70,7 @@ namespace OccupOSAPI {
         List<SensorData> resp, response;
         List<SensorDataResp> returnData;
         Dictionary<int, int> urls = null;
-
+        DateTime now;
         JsonResp tmpResp = new JsonResp();
         public object Get(SensorDataReq request) {
 
@@ -91,7 +91,7 @@ namespace OccupOSAPI {
 
             var connectionString = "Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;";
 
-            var user = "A";
+            var user = "L";
 
             if (user.Equals("M")) {
                 connectionString = "Data Source=(LocalDB)\\v11.0;Initial Catalog=OccupOSTest;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
@@ -107,11 +107,13 @@ namespace OccupOSAPI {
             var dbFactory = new OrmLiteConnectionFactory(connectionString, SqlServerDialect.Provider);
             using (IDbConnection db = dbFactory.OpenDbConnection()) {
                 resp = db.Select<SensorData>();
-
-                response = resp.OrderByDescending(x => x.MeasuredAt).ToList<SensorData>();
+                //now = DateTime.Parse("2013-03-27 20:13:30.0000000");
+                now = DateTime.Now;
+                //response = resp.OrderByDescending(x => x.MeasuredAt).ToList<SensorData>();
+                response = resp.Where(x => x.MeasuredAt > now.AddHours(-24) && x.MeasuredAt <= now).OrderByDescending(x => x.MeasuredAt).ToList <SensorData>();
                 //  var tmp = response.GroupBy(x => x.SensorType).Select(g => new { Type=g.Key, Count =g.Count(),URL = g.Key.GetHashCode() });
                 // List<Tmp> tmp = response.GroupBy(x => x.SensorType).Select(g => new Tmp { Type = g.Key, Count = g.Count(), URL = g.Key.GetHashCode() }).ToList<Tmp>();
-                System.Diagnostics.Debug.WriteLine("Count: " + "one".GetHashCode());
+                System.Diagnostics.Debug.WriteLine("Count: " + response.Count);
                 /*    if (urls == null)
                     {
                         foreach(Tmp row in tmp)
