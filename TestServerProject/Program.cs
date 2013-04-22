@@ -48,22 +48,23 @@ namespace OccupOSCloud
 
             for (int k = 0; k < packet.data.Length; k++) {
                 ReturnSensor currentdata = packet.data[k];
-                DateTime dt = currentdata.ReadTime;
+                DateTime rdt = currentdata.ReadTime;
+                DateTime pdt = currentdata.PollTime;
                 if (currentdata.Humidity != -1) {
-                    helper.InsertSensorData(1, 1, currentdata.Humidity.ToString(), dt, 5);
-                    Console.WriteLine("Inserted Humidity: " + currentdata.Humidity.ToString() + " polled at: " + dt);
+                    helper.InsertSensorData(1, 1, currentdata.Humidity.ToString(), rdt, pdt, 5);
+                    Console.WriteLine("Inserted Humidity: " + currentdata.Humidity.ToString() + " polled at: " + rdt);
                 }
                 if (currentdata.Pressure != -1) {
-                    helper.InsertSensorData(1, 1, currentdata.Pressure.ToString(), dt, 7);
-                    Console.WriteLine("Inserted Pressure: " + currentdata.Pressure.ToString() + " polled at: " + dt);
+                    helper.InsertSensorData(1, 1, currentdata.Pressure.ToString(), rdt, pdt, 7);
+                    Console.WriteLine("Inserted Pressure: " + currentdata.Pressure.ToString() + " polled at: " + rdt);
                 }
                 if (currentdata.Temperature != -1) {
-                    helper.InsertSensorData(1, 1, currentdata.Temperature.ToString(), dt, 9);
-                    Console.WriteLine("Inserted Temperature: " + currentdata.Temperature.ToString() + " polled at: " + dt);
+                    helper.InsertSensorData(1, 1, currentdata.Temperature.ToString(), rdt, pdt, 9);
+                    Console.WriteLine("Inserted Temperature: " + currentdata.Temperature.ToString() + " polled at: " + rdt);
                 }
                 if (currentdata.EntityCount != -1) {
-                    helper.InsertSensorData(3, 1, currentdata.EntityCount.ToString(), dt, 0);
-                    Console.WriteLine("Inserted EntityCount: " + currentdata.Temperature.ToString() + " polled at: " + dt);
+                    helper.InsertSensorData(3, 1, currentdata.EntityCount.ToString(), rdt, pdt, 0);
+                    Console.WriteLine("Inserted EntityCount: " + currentdata.Temperature.ToString() + " polled at: " + rdt);
                 }
                 if (packet.data[k].EntityPositions != null) {
                     for (int h = 0; h < currentdata.EntityPositions.Length; h++) {
@@ -71,14 +72,14 @@ namespace OccupOSCloud
                         if (currentposition.X != -1 && currentposition.Y != -1 && currentposition.Depth != -1) {
                             String s_pos = currentposition.X.ToString() + "," +
                                 currentposition.Y.ToString() + "," + currentposition.Depth.ToString();
-                            helper.InsertSensorData(3, 1, s_pos, dt, 1);
-                            Console.WriteLine("Inserted Position: " + s_pos + " polled at: " + dt);
+                            helper.InsertSensorData(3, 1, s_pos, rdt, pdt, 1);
+                            Console.WriteLine("Inserted Position: " + s_pos + " polled at: " + rdt);
                         }
                     }
                 }
                 if (currentdata.AnalogLight != -1) {
-                    helper.InsertSensorData(1, 1, currentdata.AnalogLight.ToString(), dt, 3);
-                    Console.WriteLine("Inserted Light: " + currentdata.AnalogLight.ToString() + " polled at: " + dt);
+                    helper.InsertSensorData(1, 1, currentdata.AnalogLight.ToString(), rdt, pdt, 3);
+                    Console.WriteLine("Inserted Light: " + currentdata.AnalogLight.ToString() + " polled at: " + rdt);
                 }
             }
         }
@@ -90,7 +91,7 @@ namespace OccupOSCloud
 
             if (decodedData[1] != "0" && decodedData[1] != "0.0") {
                 DateTime dt = DateTime.Now;
-                helper.InsertSensorData(1, 1, decodedData[1], dt, 3);
+                helper.InsertSensorData(1, 1, decodedData[1], dt, dt, 3);
 
                 // 3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
                 Console.WriteLine(
@@ -99,9 +100,9 @@ namespace OccupOSCloud
                        || (decodedData[4] != "0" && decodedData[4] != "0.0")
                        || (decodedData[5] != "0" && decodedData[5] != "0.0")) {
                 DateTime dt = DateTime.Now;
-                helper.InsertSensorData(1, 1, decodedData[3], dt, 5);
-                helper.InsertSensorData(1, 1, decodedData[4], dt, 7);
-                helper.InsertSensorData(1, 1, decodedData[5], dt, 9);
+                helper.InsertSensorData(1, 1, decodedData[3], dt, dt, 5);
+                helper.InsertSensorData(1, 1, decodedData[4], dt, dt, 7);
+                helper.InsertSensorData(1, 1, decodedData[5], dt, dt, 9);
                 Console.WriteLine(
                     "Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}\n",
                     sender.ID,
