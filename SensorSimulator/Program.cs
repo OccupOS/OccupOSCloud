@@ -20,7 +20,7 @@ namespace OccupOSCloud
             {
                 data = 40 + new Random().Next(5);
                 // if (helper.InsertSensorData(1, 1, (data).ToString(), now.AddSeconds(count), 3) > 0)
-                if (helper.InsertSensorData(1, 1, (data).ToString(), DateTime.Now, 3) > 0)
+                if (helper.InsertSensorData(1, 1, (data).ToString(), DateTime.Now, DateTime.Now, 3) > 0)
                     //System.Diagnostics.Debug.WriteLine("Light Data is inserted");
                     Console.WriteLine("Light Data is inserted");
                 else
@@ -31,7 +31,7 @@ namespace OccupOSCloud
                 Console.WriteLine(data);
                 data = 20 + new Random().Next(10);
                 //if (helper.InsertSensorData(1, 1, (data).ToString(), now.AddSeconds(count), 9) > 0)
-                if (helper.InsertSensorData(1, 1, (data).ToString(), DateTime.Now, 9) > 0)
+                if (helper.InsertSensorData(1, 1, (data).ToString(), DateTime.Now, DateTime.Now, 9) > 0)
                     //  System.Diagnostics.Debug.WriteLine("Temperature Data is inserted");
                     Console.WriteLine("Temperature Data is inserted");
                 else
