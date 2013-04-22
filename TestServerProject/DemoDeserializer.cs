@@ -29,14 +29,15 @@ namespace OccupOSCloud
                             switch (id) {
                                 case ("a"): data.ReadTime = Convert.ToDateTime(GetDataElement(reading)); break;
                                 case ("b"): data.PollTime = Convert.ToDateTime(GetDataElement(reading)); break;
-                                case ("2"): data.SoundDb = int.Parse(GetDataElement(reading)); break;
-                                case ("3"): data.AnalogLight = int.Parse(GetDataElement(reading)); break;
-                                case ("4"): data.VibrationHz = int.Parse(GetDataElement(reading)); break;
-                                case ("5"): data.Humidity = int.Parse(GetDataElement(reading)); break;
-                                case ("7"): data.Pressure = int.Parse(GetDataElement(reading)); break;
-                                case ("8"): data.PowerWatt = int.Parse(GetDataElement(reading)); break;
-                                case ("9"): data.Temperature = int.Parse(GetDataElement(reading)); break;
-                                case ("10"): data.Windspeed = int.Parse(GetDataElement(reading)); break;
+                                case ("0"): data.EntityCount = int.Parse(GetDataElement(reading)); break;
+                                case ("2"): data.SoundDb = float.Parse(GetDataElement(reading)); break;
+                                case ("3"): data.AnalogLight = float.Parse(GetDataElement(reading)); break;
+                                case ("4"): data.VibrationHz = float.Parse(GetDataElement(reading)); break;
+                                case ("5"): data.Humidity = float.Parse(GetDataElement(reading)); break;
+                                case ("7"): data.Pressure = float.Parse(GetDataElement(reading)); break;
+                                case ("8"): data.PowerWatt = float.Parse(GetDataElement(reading)); break;
+                                case ("9"): data.Temperature = float.Parse(GetDataElement(reading)); break;
+                                case ("10"): data.Windspeed = float.Parse(GetDataElement(reading)); break;
                                 default: break;
                             }
                         } else {
@@ -44,7 +45,7 @@ namespace OccupOSCloud
                             string[] vals = CommaSplit(ReturnNextLayer(reading));
                             position.X = int.Parse(GetDataElement(vals[0]));
                             position.Y = int.Parse(GetDataElement(vals[1]));
-                            position.Depth = int.Parse(GetDataElement(vals[2]));
+                            position.Depth = float.Parse(GetDataElement(vals[2]));
                             posdata.Add(position);
                         }
                     }
@@ -127,21 +128,21 @@ namespace OccupOSCloud
         public int RefNum;
         public DateTime ReadTime;
         public DateTime PollTime;
-        public float AnalogLight;
-        public int EntityCount;
-        public Position[] EntityPositions;
-        public float Humidity;
-        public float Pressure;
-        public float Temperature;
-        public float PowerWatt;
-        public float SoundDb;
-        public float VibrationHz;
-        public float Windspeed;
+        public float AnalogLight = -1;
+        public int EntityCount = -1;
+        public Position[] EntityPositions = null;
+        public float Humidity = -1;
+        public float Pressure = -1;
+        public float Temperature = -1;
+        public float PowerWatt = -1;
+        public float SoundDb = -1;
+        public float VibrationHz = -1;
+        public float Windspeed = -1;
     }
 
-    public struct Position {
-        public float Depth;
-        public int X;
-        public int Y;
+    public class Position {
+        public float Depth = -1;
+        public int X = -1;
+        public int Y = -1;
     }
 }

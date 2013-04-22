@@ -46,6 +46,41 @@ namespace OccupOSCloud
             string decodedString = Encoding.UTF8.GetString(rawData);
             ReturnPacket packet = DemoDeserializer.DeserializeJSON(decodedString);
 
+            for (int k = 0; k < packet.data.Length; k++) {
+                ReturnSensor currentdata = packet.data[k];
+                DateTime dt = currentdata.ReadTime;
+                if (currentdata.Humidity != -1) {
+                    helper.InsertSensorData(1, 1, currentdata.Humidity.ToString(), dt, 5);
+                    Console.WriteLine("Inserted Humidity: " + currentdata.Humidity.ToString() + " polled at: " + dt);
+                }
+                if (currentdata.Pressure != -1) {
+                    helper.InsertSensorData(1, 1, currentdata.Pressure.ToString(), dt, 7);
+                    Console.WriteLine("Inserted Pressure: " + currentdata.Pressure.ToString() + " polled at: " + dt);
+                }
+                if (currentdata.Temperature != -1) {
+                    helper.InsertSensorData(1, 1, currentdata.Temperature.ToString(), dt, 9);
+                    Console.WriteLine("Inserted Temperature: " + currentdata.Temperature.ToString() + " polled at: " + dt);
+                }
+                if (currentdata.EntityCount != -1) {
+                    helper.InsertSensorData(3, 1, currentdata.EntityCount.ToString(), dt, 0);
+                    Console.WriteLine("Inserted EntityCount: " + currentdata.Temperature.ToString() + " polled at: " + dt);
+                }
+                if (packet.data[k].EntityPositions != null) {
+                    for (int h = 0; h < currentdata.EntityPositions.Length; h++) {
+                        Position currentposition = currentdata.EntityPositions[h];
+                        if (currentposition.X != -1 && currentposition.Y != -1 && currentposition.Depth != -1) {
+                            String s_pos = currentposition.X.ToString() + "," +
+                                currentposition.Y.ToString() + "," + currentposition.Depth.ToString();
+                            helper.InsertSensorData(3, 1, s_pos, dt, 1);
+                            Console.WriteLine("Inserted Position: " + s_pos + " polled at: " + dt);
+                        }
+                    }
+                }
+                if (currentdata.AnalogLight != -1) {
+                    helper.InsertSensorData(1, 1, currentdata.AnalogLight.ToString(), dt, 3);
+                    Console.WriteLine("Inserted Light: " + currentdata.AnalogLight.ToString() + " polled at: " + dt);
+                }
+            }
         }
 
 
