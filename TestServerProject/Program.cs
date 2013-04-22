@@ -40,32 +40,39 @@ namespace OccupOSCloud
 
         private static void client_Received(Client sender, byte[] rawData)
         {
+            //Backup demo option:
+            //createPacketDemo(sender, rawData);
+
+            string decodedString = Encoding.UTF8.GetString(rawData);
+            ReturnPacket packet = DemoDeserializer.DeserializeJSON(decodedString);
+
+        }
+
+
+        private static void createPacketDemo(Client sender, byte[] rawData) {
             char[] delimiter = new[] { ',' };
             string[] decodedData = Encoding.UTF8.GetString(rawData).Split(delimiter);
 
-            if (decodedData[1] != "0" && decodedData[1] != "0.0")
-            {
+            if (decodedData[1] != "0" && decodedData[1] != "0.0") {
                 DateTime dt = DateTime.Now;
                 helper.InsertSensorData(1, 1, decodedData[1], dt, 3);
-                    
-                    // 3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
+
+                // 3 for LightSensor (Note: humid: 5, pressure: 7, temp: 9)
                 Console.WriteLine(
                     "Message from {0}:\nAnalogLight: {1}\nPolled at: {2}\n", sender.ID, decodedData[1], dt);
-            }
-            else if ((decodedData[3] != "0" && decodedData[3] != "0.0")
-                     || (decodedData[4] != "0" && decodedData[4] != "0.0")
-                     || (decodedData[5] != "0" && decodedData[5] != "0.0"))
-            {
+            } else if ((decodedData[3] != "0" && decodedData[3] != "0.0")
+                       || (decodedData[4] != "0" && decodedData[4] != "0.0")
+                       || (decodedData[5] != "0" && decodedData[5] != "0.0")) {
                 DateTime dt = DateTime.Now;
                 helper.InsertSensorData(1, 1, decodedData[3], dt, 5);
                 helper.InsertSensorData(1, 1, decodedData[4], dt, 7);
                 helper.InsertSensorData(1, 1, decodedData[5], dt, 9);
                 Console.WriteLine(
-                    "Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}\n", 
-                    sender.ID, 
-                    dt, 
-                    decodedData[3], 
-                    decodedData[4], 
+                    "Message from {0}:\nHumidity: {2}\nPressure: {3}\nTemperature: {4}\nPolled at: {1}\n",
+                    sender.ID,
+                    dt,
+                    decodedData[3],
+                    decodedData[4],
                     decodedData[5]);
             }
         }
