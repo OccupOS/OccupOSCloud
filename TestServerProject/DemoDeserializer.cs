@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OccupOSCloud
 {
    public static class DemoDeserializer
     {
+
+       private static NumberStyles istyle = NumberStyles.Integer;
+       private static NumberStyles fstyle = NumberStyles.Float;
+       private static CultureInfo culture = CultureInfo.CreateSpecificCulture("en-GB");
 
        /*
          * DEMO DESERIALIZE METHODS
@@ -25,27 +30,32 @@ namespace OccupOSCloud
                     string[] readings = CommaSplit(ReturnNextLayer(sensor));
                     foreach (string reading in readings) {
                         string id = GetIdElement(reading);
+                        int inum = -1;
+                        float fnum = -1;
                         if (!id.Contains("1.")) {
                             switch (id) {
                                 case ("a"): data.ReadTime = Convert.ToDateTime(GetDataElement(reading)); break;
                                 case ("b"): data.PollTime = Convert.ToDateTime(GetDataElement(reading)); break;
-                                case ("0"): data.EntityCount = int.Parse(GetDataElement(reading)); break;
-                                case ("2"): data.SoundDb = float.Parse(GetDataElement(reading)); break;
-                                case ("3"): data.AnalogLight = float.Parse(GetDataElement(reading)); break;
-                                case ("4"): data.VibrationHz = float.Parse(GetDataElement(reading)); break;
-                                case ("5"): data.Humidity = float.Parse(GetDataElement(reading)); break;
-                                case ("7"): data.Pressure = float.Parse(GetDataElement(reading)); break;
-                                case ("8"): data.PowerWatt = float.Parse(GetDataElement(reading)); break;
-                                case ("9"): data.Temperature = float.Parse(GetDataElement(reading)); break;
-                                case ("10"): data.Windspeed = float.Parse(GetDataElement(reading)); break;
+                                case ("0"): int.TryParse(GetDataElement(reading), istyle, culture, out inum); data.EntityCount = inum; break;
+                                case ("2"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.SoundDb = fnum; break;
+                                case ("3"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.AnalogLight = fnum; break;
+                                case ("4"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.VibrationHz = fnum; break;
+                                case ("5"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.Humidity = fnum; break;
+                                case ("7"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.Pressure = fnum; break;
+                                case ("8"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.PowerWatt = fnum; break;
+                                case ("9"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.Temperature = fnum; break;
+                                case ("10"): float.TryParse(GetDataElement(reading), fstyle, culture, out fnum); data.Windspeed = fnum; break;
                                 default: break;
                             }
                         } else {
                             Position position = new Position();
                             string[] vals = CommaSplit(ReturnNextLayer(reading));
-                            position.X = int.Parse(GetDataElement(vals[0]));
-                            position.Y = int.Parse(GetDataElement(vals[1]));
-                            position.Depth = float.Parse(GetDataElement(vals[2]));
+                            int.TryParse(GetDataElement(vals[0]), istyle, culture, out inum);
+                            int.TryParse(GetDataElement(vals[1]), istyle, culture, out inum);
+                            float.TryParse(GetDataElement(vals[2]), fstyle, culture, out fnum);
+                            position.X = inum;
+                            position.Y = inum;
+                            position.Depth = fnum;
                             posdata.Add(position);
                         }
                     }
