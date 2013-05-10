@@ -28,8 +28,8 @@ namespace OccupOSCloud
             listener.SocketAccepted += new Listener.SocketAcceptedHandler(l_SocketAccepted);
             listener.Start();
 
-            helper = new SQLServerHelper(
-                "tcp:dndo40zalb.database.windows.net,1433", "comp2014@dndo40zalb", "20041908kjH", "TestSQLDB");
+            // helper = new SQLServerHelper("tcp:dndo40zalb.database.windows.net,1433", "comp2014@dndo40zalb", "20041908kjH", "TestSQLDB");
+            helper = new SQLServerHelper("Data Source=DANS-PC; Database=OccupOS;Trusted_Connection=True;");
 
             Console.WriteLine("Listening for connections on port {0}...", LISTENER_PORT);
             Console.Read();
@@ -49,8 +49,12 @@ namespace OccupOSCloud
             for (int k = 0; k < packet.data.Length; k++)
             {
                 ReturnSensor currentdata = packet.data[k];
-                DateTime rdt = currentdata.ReadTime;
-                DateTime pdt = currentdata.PollTime;
+
+                // DateTime rdt = currentdata.ReadTime;
+                DateTime rdt = DateTime.Now;
+
+                // DateTime pdt = currentdata.PollTime;
+                DateTime pdt = DateTime.Now;
                 if (currentdata.Humidity != -1)
                 {
                     helper.InsertSensorData(1, 1, currentdata.Humidity.ToString(), rdt, pdt, 5);

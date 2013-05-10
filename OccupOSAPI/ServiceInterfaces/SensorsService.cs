@@ -25,9 +25,6 @@ namespace OccupOSAPI {
 
 
     public class SensorDataResp {
-        // public int Id {get;set;}
-        //  public int SensorMetadataId { get; set; }
-        //  public int IntermediateHwMedadataId { get; set; }
         public string measuredData { get; set; }
         public System.DateTime measuredAt { get; set; }
         public int sensorType { get; set; }
@@ -37,8 +34,6 @@ namespace OccupOSAPI {
     [Route("/api/v1/Sensors", "POST")]
     public class SensorDataAdd {
         public int Id { get; set; }
-        // public  SensorMetadata SensorMetadata { get; set; }
-        //   public  HwControllerMetadata HwControllerMetadata { get; set; }
         public int SensorMetadataId { get; set; }
         public int IntermediateHwMedadataId { get; set; }
         public string MeasuredData { get; set; }
