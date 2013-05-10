@@ -1,61 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SensorDataTest.cs" company="OccupOS">
+//   This file is part of OccupOS.
+//   OccupOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//   OccupOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//   You should have received a copy of the GNU General Public License along with OccupOS.  If not, see <http://www.gnu.org/licenses/>.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace OccupOSCloud
 {
-   public class SensorDataTest : TableEntity
+    using System;
+
+    using Microsoft.WindowsAzure.Storage.Table;
+
+    public class SensorDataTest : TableEntity
     {
         public SensorDataTest(int Id, int SensorMetadataId)
         {
             this.RowKey = Id.ToString();
             this.PartitionKey = SensorMetadataId.ToString();
         }
-        public SensorDataTest() { }
 
-        public int IntermediateHwMetadataId
+        public SensorDataTest()
         {
-            get;
-            set;
         }
 
-        public string MeasuredData
-        {
-            get;
-            set;
-        }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime MeasuredAt
-        {
-            get;
-            set;
-        }
+        public int IntermediateHwMetadataId { get; set; }
 
-        public DateTime SendAt
-        {
-            get;
-            set;
-        }
+        public DateTime MeasuredAt { get; set; }
 
-        public DateTime PolledAt
-        {
-            get;
-            set;
-        }
+        public string MeasuredData { get; set; }
 
-        public DateTime UpdatedAt
-        {
-            get;
-            set;
-        }
+        public DateTime PolledAt { get; set; }
 
-        public DateTime CreatedAt
-        {
-            get;
-            set;
-        }
+        public DateTime SendAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

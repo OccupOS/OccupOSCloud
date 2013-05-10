@@ -1,82 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Sockets;
-using System.Net;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Client.cs" company="OccupOS">
+//   This file is part of OccupOS.
+//   OccupOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//   OccupOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//   You should have received a copy of the GNU General Public License along with OccupOS.  If not, see <http://www.gnu.org/licenses/>.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace OccupOSNode
 {
-    class Client
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
+    internal class Client
     {
-        public string ID
-        {
-            get;
-            private set;
-        }
-        public IPEndPoint EndPoing
-        {
-            get;
-            private set;
-        }
-        Socket sck;
+        private Socket sck;
 
         public Client(Socket accepted)
         {
-            sck = accepted;
-            ID = Guid.NewGuid().ToString();
-            EndPoing = (IPEndPoint)sck.RemoteEndPoint;
-            sck.BeginReceive(new byte[] { 0 }, 0,0,0, callback, null);
+            this.sck = accepted;
+            this.ID = Guid.NewGuid().ToString();
+            this.EndPoing = (IPEndPoint)this.sck.RemoteEndPoint;
+            this.sck.BeginReceive(new byte[] { 0 }, 0, 0, 0, this.callback, null);
         }
 
-        void callback(IAsyncResult ar)
+        public delegate void ClientDisconnectedHandler(Client sender);
+
+        public delegate void ClientReceivedHandler(Client sender, byte[] data);
+
+        public event ClientDisconnectedHandler Disconnected;
+
+        public event ClientReceivedHandler Received;
+
+        public IPEndPoint EndPoing { get; private set; }
+
+        public string ID { get; private set; }
+
+        public void Close()
+        {
+            this.sck.Close();
+            this.sck.Dispose();
+        }
+
+        private void callback(IAsyncResult ar)
         {
             try
             {
-                sck.EndReceive(ar);
+                this.sck.EndReceive(ar);
 
                 byte[] buf = new byte[8192];
 
-                int rec = sck.Receive(buf, buf.Length, 0);
+                int rec = this.sck.Receive(buf, buf.Length, 0);
 
                 if (rec < buf.Length)
                 {
-                    Array.Resize<byte>(ref buf,rec);
+                    Array.Resize<byte>(ref buf, rec);
                 }
 
-                if (Received != null)
+                if (this.Received != null)
                 {
-                    Received(this, buf);
+                    this.Received(this, buf);
                 }
 
-                sck.BeginReceive(new byte[] { 0 }, 0, 0, 0, callback, null);
+                this.sck.BeginReceive(new byte[] { 0 }, 0, 0, 0, this.callback, null);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Close();
+                this.Close();
 
-                if (Disconnected!=null)
+                if (this.Disconnected != null)
                 {
-                    Disconnected(this);
+                    this.Disconnected(this);
                 }
             }
-
         }
-
-        public void Close()
-        {
-            sck.Close();
-            sck.Dispose();
-        }
-
-        public delegate void ClientReceivedHandler(Client sender, byte[] data);
-        public delegate void ClientDisconnectedHandler(Client sender);
-
-        public event ClientReceivedHandler Received;
-        public event ClientDisconnectedHandler Disconnected;
-
     }
 }

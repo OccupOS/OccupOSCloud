@@ -1,70 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Sockets;
-using System.Net;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Listener.cs" company="OccupOS">
+//   This file is part of OccupOS.
+//   OccupOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//   OccupOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//   You should have received a copy of the GNU General Public License along with OccupOS.  If not, see <http://www.gnu.org/licenses/>.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace OccupOSNode
 {
-    class Listener
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
+    internal class Listener
     {
-        Socket s;
-
-        public bool Listening
-        {
-            get;
-            private set;
-        }
-
-        public int Port
-        {
-            get;
-            private set;
-        }
+        private Socket s;
 
         public Listener(int port)
         {
-            Port = port;
-            s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this.Port = port;
+            this.s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
+
+        public delegate void SocketAcceptedHandler(Socket e);
+
+        public event SocketAcceptedHandler SocketAccepted;
+
+        public bool Listening { get; private set; }
+
+        public int Port { get; private set; }
 
         public void Start()
         {
-            if (Listening)
+            if (this.Listening)
+            {
                 return;
-            s.Bind(new IPEndPoint(IPAddress.Any, Port));
-            s.Listen(0);
-            s.BeginAccept(callback, null);
-            Listening = true;
+            }
+
+            this.s.Bind(new IPEndPoint(IPAddress.Any, this.Port));
+            this.s.Listen(0);
+            this.s.BeginAccept(this.callback, null);
+            this.Listening = true;
         }
 
         public void Stop()
         {
-            if (!Listening)
+            if (!this.Listening)
+            {
                 return;
-            s.Close();
-            s.Dispose();
-            s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            }
+
+            this.s.Close();
+            this.s.Dispose();
+            this.s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
-        void callback(IAsyncResult ar)
+        private void callback(IAsyncResult ar)
         {
             try
             {
                 Socket s = this.s.EndAccept(ar);
-                if (SocketAccepted != null)
-                    SocketAccepted(s);
-                this.s.BeginAccept(callback,null);
+                if (this.SocketAccepted != null)
+                {
+                    this.SocketAccepted(s);
+                }
+
+                this.s.BeginAccept(this.callback, null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
-        public delegate void SocketAcceptedHandler(Socket e);
-        public event SocketAcceptedHandler SocketAccepted;
     }
 }
